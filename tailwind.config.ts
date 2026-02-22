@@ -2,6 +2,9 @@ import { heroui } from "@heroui/react";
 import tailwindcssAnimate from "tailwindcss-animate";
 import type { Config } from "tailwindcss";
 
+const herouiPlugin =
+  heroui() as unknown as NonNullable<Config["plugins"]>[number];
+
 export default {
   darkMode: ["class"],
   content: [
@@ -62,5 +65,5 @@ export default {
       },
     },
   },
-  plugins: [tailwindcssAnimate, heroui()],
+  plugins: [tailwindcssAnimate, herouiPlugin],
 } satisfies Config;
