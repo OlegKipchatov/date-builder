@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Card as HeroCard,
   CardHeader as HeroCardHeader,

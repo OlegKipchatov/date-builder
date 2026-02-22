@@ -1,3 +1,5 @@
+"use client";
+
 import { Input as HeroInput } from "@heroui/react";
 import type { ComponentProps } from "react";
 
