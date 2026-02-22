@@ -1,5 +1,7 @@
 "use client";
 
+import { Card, CardBody } from "@heroui/react";
+
 import { useDateDiff } from "../model/use-date-diff";
 
 export type DateDiffFormProps = {
@@ -25,6 +27,7 @@ export const DateDiffForm = ({ className }: DateDiffFormProps) => {
     setDateA,
     setDateB,
     saveCalculation,
+    applyHistoryItem,
     clearSavedHistory,
   } = useDateDiff();
 
@@ -85,12 +88,16 @@ export const DateDiffForm = ({ className }: DateDiffFormProps) => {
       ) : (
         <ul className="mt-2 space-y-3 text-sm">
           {history.map((item) => (
-            <li key={item.id} className="rounded-md border border-slate-200 bg-white p-3">
-              <p className="font-medium text-slate-700">
-                {formatDateForHistory(item.dateA)} → {formatDateForHistory(item.dateB)}
-              </p>
-              <div className="my-2 h-px bg-slate-200" />
-              <p className="text-slate-600">Разница: {item.daysDiff} day(s)</p>
+            <li key={item.id}>
+              <Card isPressable onPress={() => applyHistoryItem(item)} shadow="none">
+                <CardBody className="rounded-md border border-slate-200 bg-white p-3">
+                  <p className="font-medium text-slate-700">
+                    {formatDateForHistory(item.dateA)} → {formatDateForHistory(item.dateB)}
+                  </p>
+                  <div className="my-2 h-px bg-slate-200" />
+                  <p className="text-slate-600">Разница: {item.daysDiff} day(s)</p>
+                </CardBody>
+              </Card>
             </li>
           ))}
         </ul>
