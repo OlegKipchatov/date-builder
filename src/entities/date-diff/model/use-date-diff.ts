@@ -2,15 +2,16 @@
 
 import { useCallback, useEffect, useState } from "react";
 
-import { getDaysDiff, getTodayDate } from "./date-diff-utils.mjs";
+import { useLocalStorage } from "@/src/shared/lib/useLocalStorage";
 
-export type CalculationHistoryItem = {
-  id: string;
-  dateA: string;
-  dateB: string;
-  daysDiff: number;
-  timestamp: string;
-};
+import { getDaysDiff, getTodayDate } from "./date-diff-utils.mjs";
+import {
+  addHistoryItem,
+  CalculationHistoryItem,
+  clearHistory,
+  getHistory,
+  historyStorageKey,
+} from "./history";
 
 export type UseDateDiffResult = {
   dateA: string;
@@ -21,13 +22,17 @@ export type UseDateDiffResult = {
   setDateB: (value: string) => void;
   recalculate: () => number;
   saveCalculation: () => void;
+  clearSavedHistory: () => void;
 };
 
 export const useDateDiff = (): UseDateDiffResult => {
   const [dateA, setDateA] = useState<string>("");
   const [dateB, setDateB] = useState<string>("2000-01-01");
   const [daysDiff, setDaysDiff] = useState<number>(0);
-  const [history, setHistory] = useState<CalculationHistoryItem[]>([]);
+  const [history, setHistory] = useLocalStorage<CalculationHistoryItem[]>(
+    historyStorageKey,
+    getHistory(),
+  );
 
   useEffect(() => {
     setDateA(getTodayDate());
@@ -60,8 +65,13 @@ export const useDateDiff = (): UseDateDiffResult => {
       timestamp: new Date().toISOString(),
     };
 
-    setHistory((previousHistory) => [newHistoryItem, ...previousHistory]);
-  }, [dateA, dateB, recalculate]);
+    setHistory(addHistoryItem(newHistoryItem));
+  }, [dateA, dateB, recalculate, setHistory]);
+
+  const clearSavedHistory = useCallback(() => {
+    clearHistory();
+    setHistory([]);
+  }, [setHistory]);
 
   return {
     dateA,
@@ -72,5 +82,6 @@ export const useDateDiff = (): UseDateDiffResult => {
     setDateB,
     recalculate,
     saveCalculation,
+    clearSavedHistory,
   };
 };
