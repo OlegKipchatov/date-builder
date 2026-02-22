@@ -17,8 +17,16 @@ const formatDateForHistory = (value: string): string => {
 };
 
 export const DateDiffForm = ({ className }: DateDiffFormProps) => {
-  const { dateA, dateB, daysDiff, history, setDateA, setDateB, saveCalculation } =
-    useDateDiff();
+  const {
+    dateA,
+    dateB,
+    daysDiff,
+    history,
+    setDateA,
+    setDateB,
+    saveCalculation,
+    clearSavedHistory,
+  } = useDateDiff();
 
   return (
     <section className={className}>
@@ -56,9 +64,21 @@ export const DateDiffForm = ({ className }: DateDiffFormProps) => {
         Вычислить
       </button>
 
-      <h3 className="mt-6 text-sm font-semibold uppercase tracking-wide text-slate-600">
-        История
-      </h3>
+      <div className="mt-6 flex items-center justify-between gap-3">
+        <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-600">
+          История
+        </h3>
+
+        {history.length > 0 ? (
+          <button
+            type="button"
+            onClick={clearSavedHistory}
+            className="text-xs font-medium text-slate-500 hover:text-slate-700"
+          >
+            Очистить
+          </button>
+        ) : null}
+      </div>
 
       {history.length === 0 ? (
         <p className="mt-2 text-sm text-slate-500">Записей пока нет.</p>
