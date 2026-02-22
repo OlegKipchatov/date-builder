@@ -23,6 +23,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@heroui/theme": "^2.4.26",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
