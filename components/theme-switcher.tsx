@@ -1,22 +1,14 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@heroui/react";
 import { Laptop, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 
-const ThemeSwitcher = () => {
+export const ThemeSwitcher = () => {
   const [mounted, setMounted] = useState(false);
   const { theme, setTheme } = useTheme();
 
-  // useEffect only runs on the client, so now we can safely show the UI
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -25,54 +17,43 @@ const ThemeSwitcher = () => {
     return null;
   }
 
-  const ICON_SIZE = 16;
+  const iconSize = 16;
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size={"sm"}>
+    <Dropdown>
+      <DropdownTrigger>
+        <Button variant="light" size="sm" isIconOnly>
           {theme === "light" ? (
-            <Sun
-              key="light"
-              size={ICON_SIZE}
-              className={"text-muted-foreground"}
-            />
+            <Sun key="light" size={iconSize} className="text-default-500" />
           ) : theme === "dark" ? (
-            <Moon
-              key="dark"
-              size={ICON_SIZE}
-              className={"text-muted-foreground"}
-            />
+            <Moon key="dark" size={iconSize} className="text-default-500" />
           ) : (
-            <Laptop
-              key="system"
-              size={ICON_SIZE}
-              className={"text-muted-foreground"}
-            />
+            <Laptop key="system" size={iconSize} className="text-default-500" />
           )}
         </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-content" align="start">
-        <DropdownMenuRadioGroup
-          value={theme}
-          onValueChange={(e) => setTheme(e)}
-        >
-          <DropdownMenuRadioItem className="flex gap-2" value="light">
-            <Sun size={ICON_SIZE} className="text-muted-foreground" />{" "}
-            <span>Light</span>
-          </DropdownMenuRadioItem>
-          <DropdownMenuRadioItem className="flex gap-2" value="dark">
-            <Moon size={ICON_SIZE} className="text-muted-foreground" />{" "}
-            <span>Dark</span>
-          </DropdownMenuRadioItem>
-          <DropdownMenuRadioItem className="flex gap-2" value="system">
-            <Laptop size={ICON_SIZE} className="text-muted-foreground" />{" "}
-            <span>System</span>
-          </DropdownMenuRadioItem>
-        </DropdownMenuRadioGroup>
-      </DropdownMenuContent>
-    </DropdownMenu>
+      </DropdownTrigger>
+      <DropdownMenu
+        aria-label="Theme switcher"
+        disallowEmptySelection
+        selectedKeys={new Set([theme ?? "system"])}
+        selectionMode="single"
+        onSelectionChange={(keys) => {
+          const selectedKey = Array.from(keys)[0];
+          if (typeof selectedKey === "string") {
+            setTheme(selectedKey);
+          }
+        }}
+      >
+        <DropdownItem key="light" startContent={<Sun size={iconSize} className="text-default-500" />}>
+          Light
+        </DropdownItem>
+        <DropdownItem key="dark" startContent={<Moon size={iconSize} className="text-default-500" />}>
+          Dark
+        </DropdownItem>
+        <DropdownItem key="system" startContent={<Laptop size={iconSize} className="text-default-500" />}>
+          System
+        </DropdownItem>
+      </DropdownMenu>
+    </Dropdown>
   );
 };
-
-export { ThemeSwitcher };
