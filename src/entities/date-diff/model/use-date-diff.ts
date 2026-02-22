@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { getDaysDiff, getTodayDate } from "./date-diff-utils.mjs";
 
@@ -13,10 +13,18 @@ export type UseDateDiffResult = {
 };
 
 export const useDateDiff = (): UseDateDiffResult => {
-  const [dateA, setDateA] = useState<string>(() => getTodayDate());
+  const [dateA, setDateA] = useState<string>("");
   const [dateB, setDateB] = useState<string>("2000-01-01");
 
+  useEffect(() => {
+    setDateA(getTodayDate());
+  }, []);
+
   const daysDiff = useMemo(() => {
+    if (!dateA || !dateB) {
+      return 0;
+    }
+
     return getDaysDiff(dateA, dateB);
   }, [dateA, dateB]);
 
