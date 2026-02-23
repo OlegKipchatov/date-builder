@@ -1,6 +1,15 @@
 "use client";
 
-import { Button, Card, CardBody, Divider, Input } from "@heroui/react";
+import {
+  Button,
+  Card,
+  CardBody,
+  CardFooter,
+  DateRangePicker,
+  Divider,
+} from "@heroui/react";
+import { parseDate, type DateValue } from "@internationalized/date";
+import type { RangeValue } from "@react-types/shared";
 
 import { useDateDiff } from "../model/use-date-diff";
 
@@ -18,6 +27,17 @@ const formatDateForHistory = (value: string): string => {
   return `${Number(day)}.${Number(month)}.${year}`;
 };
 
+const toRangeValue = (dateA: string, dateB: string): RangeValue<DateValue> | null => {
+  if (!dateA || !dateB) {
+    return null;
+  }
+
+  return {
+    start: parseDate(dateA),
+    end: parseDate(dateB),
+  };
+};
+
 export const DateDiffForm = ({ className }: DateDiffFormProps) => {
   const {
     dateA,
@@ -31,27 +51,26 @@ export const DateDiffForm = ({ className }: DateDiffFormProps) => {
     clearSavedHistory,
   } = useDateDiff();
 
+  const handleDateRangeChange = (value: RangeValue<DateValue> | null) => {
+    if (!value) {
+      return;
+    }
+
+    setDateA(value.start.toString());
+    setDateB(value.end.toString());
+  };
+
   return (
     <section className={className}>
-      <div className="grid gap-4 md:grid-cols-2">
-        <Input
-          label="Date A"
-          labelPlacement="outside"
-          type="date"
-          value={dateA}
-          onValueChange={setDateA}
-        />
+      <DateRangePicker
+        label="Date range"
+        labelPlacement="outside"
+        value={toRangeValue(dateA, dateB)}
+        onChange={handleDateRangeChange}
+        visibleMonths={2}
+      />
 
-        <Input
-          label="Date B"
-          labelPlacement="outside"
-          type="date"
-          value={dateB}
-          onValueChange={setDateB}
-        />
-      </div>
-
-      <Card className="mt-4" shadow="sm">
+      <Card className="mt-4" shadow="none">
         <CardBody className="text-lg font-semibold">
           Difference: {daysDiff} day(s)
         </CardBody>
@@ -79,14 +98,18 @@ export const DateDiffForm = ({ className }: DateDiffFormProps) => {
         <ul className="mt-2 space-y-3 text-sm">
           {history.map((item) => (
             <li key={item.id}>
-              <Card isPressable onPress={() => applyHistoryItem(item)} shadow="none">
-                <CardBody className="rounded-md border border-slate-200 bg-white p-3">
-                  <p className="font-medium text-slate-700">
-                    {formatDateForHistory(item.dateA)} → {formatDateForHistory(item.dateB)}
-                  </p>
-                  <Divider className="my-2" />
-                  <p className="text-slate-600">Разница: {item.daysDiff} day(s)</p>
+              <Card
+                isPressable
+                onPress={() => applyHistoryItem(item)}
+                className="w-full"
+              >
+                <CardBody className="font-medium text-slate-700">
+                  {formatDateForHistory(item.dateA)} → {formatDateForHistory(item.dateB)}
                 </CardBody>
+                <Divider />
+                <CardFooter className="text-slate-600">
+                  Разница: {item.daysDiff} day(s)
+                </CardFooter>
               </Card>
             </li>
           ))}
