@@ -27,7 +27,10 @@ const formatDateForHistory = (value: string): string => {
   return `${Number(day)}.${Number(month)}.${year}`;
 };
 
-const toRangeValue = (dateA: string, dateB: string): RangeValue<DateValue> | null => {
+const toRangeValue = (
+  dateA: string,
+  dateB: string,
+): RangeValue<DateValue> | null => {
   if (!dateA || !dateB) {
     return null;
   }
@@ -72,7 +75,6 @@ export const DateDiffForm = ({ className }: DateDiffFormProps) => {
         visibleMonths={2}
       />
 
-
       <Card className="mt-4" shadow="none">
         <CardBody className="text-lg font-semibold">
           Difference: {daysDiff} day(s)
@@ -102,12 +104,14 @@ export const DateDiffForm = ({ className }: DateDiffFormProps) => {
           {history.map((item) => (
             <li key={item.id}>
               <Card
+                isHoverable
                 isPressable
                 onPress={() => applyHistoryItem(item)}
                 className="w-full"
               >
                 <CardBody className="font-medium text-slate-700">
-                  {formatDateForHistory(item.dateA)} → {formatDateForHistory(item.dateB)}
+                  {formatDateForHistory(item.dateA)} →{" "}
+                  {formatDateForHistory(item.dateB)}
                 </CardBody>
                 <Divider />
                 <CardFooter className="text-slate-600">
