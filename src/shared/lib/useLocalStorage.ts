@@ -14,7 +14,11 @@ export const useLocalStorage = <T,>(
   key: string,
   initialValue: T,
 ): UseLocalStorageResult<T> => {
-  const [value, setValue] = useState<T>(() => getLS<T>(key, initialValue));
+  const [value, setValue] = useState<T>(initialValue);
+
+  useEffect(() => {
+    setValue(getLS<T>(key, initialValue));
+  }, [initialValue, key]);
 
   useEffect(() => {
     const handleStorage = (event: StorageEvent) => {
