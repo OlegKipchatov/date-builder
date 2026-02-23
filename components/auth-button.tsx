@@ -12,16 +12,16 @@ export const AuthButton = async () => {
 
   return user ? (
     <div className="flex items-center gap-4">
-      Hey, {user.email}!
+      Привет, {user.email}!
       <LogoutButton />
     </div>
   ) : (
     <div className="flex gap-2">
       <Button as={Link} href="/auth/login" size="sm" variant="outline">
-        Sign in
+        Войти
       </Button>
       <Button as={Link} href="/auth/sign-up" size="sm" variant="default">
-        Sign up
+        Регистрация
       </Button>
     </div>
   );

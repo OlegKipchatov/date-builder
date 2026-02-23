@@ -7,11 +7,14 @@ export type HomePageLayoutProps = {
 
 export const HomePageLayout = ({ children }: HomePageLayoutProps) => {
   return (
-    <main className="min-h-screen flex items-center justify-center">
-      <div className="w-full max-w-7xl p-6">
-        <Suspense fallback={<div className="mx-auto max-w-xl" />}>
-          <DateDiffForm className="mx-auto max-w-xl" />
+    <main className="min-h-screen">
+      <div className="mx-auto w-full max-w-7xl p-6">
+        <h1 className="text-3xl font-bold">Разница в днях</h1>
+
+        <Suspense fallback={<div className="mx-auto mt-6 max-w-xl" />}>
+          <DateDiffForm className="mx-auto mt-6 max-w-xl" />
         </Suspense>
+
         {children}
       </div>
     </main>

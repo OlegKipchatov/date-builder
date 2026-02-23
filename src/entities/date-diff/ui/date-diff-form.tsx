@@ -6,7 +6,6 @@ import {
   CardBody,
   CardFooter,
   DateRangePicker,
-  Divider,
 } from "@heroui/react";
 import { parseDate, type DateValue } from "@internationalized/date";
 import type { RangeValue } from "@react-types/shared";
@@ -64,29 +63,43 @@ export const DateDiffForm = ({ className }: DateDiffFormProps) => {
     setDateB(value.end.toString());
   };
 
+  const handleHistoryItemPress = (item: (typeof history)[number]) => {
+    applyHistoryItem(item);
+
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const formElement = document.getElementById("date-diff-form");
+    formElement?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
   return (
-    <section className={className}>
-      <DateRangePicker
-        label="Date range"
-        aria-label="Date range"
-        labelPlacement="outside"
-        value={toRangeValue(dateA, dateB)}
-        onChange={handleDateRangeChange}
-        visibleMonths={2}
-      />
+    <section id="date-diff-form" className={className}>
+      <div className="flex items-end gap-3">
+        <DateRangePicker
+          label="Диапазон дат"
+          aria-label="Диапазон дат"
+          labelPlacement="outside"
+          value={toRangeValue(dateA, dateB)}
+          onChange={handleDateRangeChange}
+          visibleMonths={2}
+          className="flex-1"
+        />
 
-      <Card className="mt-4" shadow="none">
-        <CardBody className="text-lg font-semibold">
-          Difference: {daysDiff} day(s)
-        </CardBody>
-      </Card>
+        <Card shadow="none">
+          <CardBody className="p-0 text-lg font-semibold">
+            Разница: {daysDiff} дн.
+          </CardBody>
+        </Card>
 
-      <Button className="mt-4 w-full" color="primary" onPress={saveCalculation}>
-        Вычислить
-      </Button>
+        <Button color="primary" onPress={saveCalculation}>
+          Вычислить
+        </Button>
+      </div>
 
       <div className="mt-6 flex items-center justify-between gap-3">
-        <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-600">
+        <h3 className="text-2xl font-bold text-slate-800">
           История
         </h3>
 
@@ -106,16 +119,15 @@ export const DateDiffForm = ({ className }: DateDiffFormProps) => {
               <Card
                 isHoverable
                 isPressable
-                onPress={() => applyHistoryItem(item)}
+                onPress={() => handleHistoryItemPress(item)}
                 className="w-full"
               >
                 <CardBody className="font-medium text-slate-700">
                   {formatDateForHistory(item.dateA)} →{" "}
                   {formatDateForHistory(item.dateB)}
                 </CardBody>
-                <Divider />
                 <CardFooter className="text-slate-600">
-                  Разница: {item.daysDiff} day(s)
+                  Разница: {item.daysDiff} дн.
                 </CardFooter>
               </Card>
             </li>
