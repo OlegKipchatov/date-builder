@@ -10,6 +10,7 @@ import {
 } from "@heroui/react";
 import { parseDate, type DateValue } from "@internationalized/date";
 import type { RangeValue } from "@react-types/shared";
+import { useState } from "react";
 
 import { useDateDiff } from "../model/use-date-diff";
 
@@ -32,9 +33,11 @@ const toRangeValue = (dateA: string, dateB: string): RangeValue<DateValue> | nul
     return null;
   }
 
+  const [startDate, endDate] = dateA <= dateB ? [dateA, dateB] : [dateB, dateA];
+
   return {
-    start: parseDate(dateA),
-    end: parseDate(dateB),
+    start: parseDate(startDate),
+    end: parseDate(endDate),
   };
 };
 
@@ -50,25 +53,47 @@ export const DateDiffForm = ({ className }: DateDiffFormProps) => {
     applyHistoryItem,
     clearSavedHistory,
   } = useDateDiff();
+  const [isReverseOrder, setIsReverseOrder] = useState<boolean>(dateA > dateB);
 
   const handleDateRangeChange = (value: RangeValue<DateValue> | null) => {
     if (!value) {
       return;
     }
 
-    setDateA(value.start.toString());
-    setDateB(value.end.toString());
+    const startValue = value.start.toString();
+    const endValue = value.end.toString();
+
+    if (isReverseOrder) {
+      setDateA(endValue);
+      setDateB(startValue);
+
+      return;
+    }
+
+    setDateA(startValue);
+    setDateB(endValue);
+  };
+
+  const handleReverseOrderToggle = () => {
+    setIsReverseOrder((current) => !current);
+    setDateA(dateB);
+    setDateB(dateA);
   };
 
   return (
     <section className={className}>
       <DateRangePicker
         label="Date range"
+        aria-label="Date range"
         labelPlacement="outside"
         value={toRangeValue(dateA, dateB)}
         onChange={handleDateRangeChange}
         visibleMonths={2}
       />
+
+      <Button className="mt-3" variant="light" onPress={handleReverseOrderToggle}>
+        {isReverseOrder ? "Порядок: B → A" : "Порядок: A → B"}
+      </Button>
 
       <Card className="mt-4" shadow="none">
         <CardBody className="text-lg font-semibold">
