@@ -6,7 +6,7 @@ const herouiPlugin =
   heroui() as unknown as NonNullable<Config["plugins"]>[number];
 
 export default {
-  darkMode: ["class"],
+  darkMode: "class",
   content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
