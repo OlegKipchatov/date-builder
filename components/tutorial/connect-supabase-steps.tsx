@@ -3,9 +3,9 @@ import { TutorialStep } from "./tutorial-step";
 export function ConnectSupabaseSteps() {
   return (
     <ol className="flex flex-col gap-6">
-      <TutorialStep title="Create Supabase project">
+      <TutorialStep title="Создайте проект Supabase">
         <p>
-          Head over to{" "}
+          Перейдите на{" "}
           <a
             href="https://app.supabase.com/project/_/settings/api"
             target="_blank"
@@ -14,21 +14,21 @@ export function ConnectSupabaseSteps() {
           >
             database.new
           </a>{" "}
-          and create a new Supabase project.
+          и создайте новый проект Supabase.
         </p>
       </TutorialStep>
 
-      <TutorialStep title="Declare environment variables">
+      <TutorialStep title="Укажите переменные окружения">
         <p>
           Rename the{" "}
           <span className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-xs font-medium text-secondary-foreground border">
             .env.example
           </span>{" "}
-          file in your Next.js app to{" "}
+          в вашем приложении Next.js в{" "}
           <span className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-xs font-medium text-secondary-foreground border">
             .env.local
           </span>{" "}
-          and populate with values from{" "}
+          и заполните значениями из{" "}
           <a
             href="https://app.supabase.com/project/_/settings/api"
             target="_blank"
@@ -41,20 +41,20 @@ export function ConnectSupabaseSteps() {
         </p>
       </TutorialStep>
 
-      <TutorialStep title="Restart your Next.js development server">
+      <TutorialStep title="Перезапустите сервер разработки Next.js">
         <p>
-          You may need to quit your Next.js development server and run{" "}
+          Возможно, потребуется остановить сервер разработки Next.js и снова выполнить{" "}
           <span className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-xs font-medium text-secondary-foreground border">
             npm run dev
           </span>{" "}
-          again to load the new environment variables.
+          чтобы подгрузить новые переменные окружения.
         </p>
       </TutorialStep>
 
-      <TutorialStep title="Refresh the page">
+      <TutorialStep title="Обновите страницу">
         <p>
-          You may need to refresh the page for Next.js to load the new
-          environment variables.
+          Возможно, потребуется обновить страницу, чтобы Next.js подгрузил
+          новые переменные окружения.
         </p>
       </TutorialStep>
     </ol>

@@ -34,4 +34,12 @@ describe("useLocalStorage", () => {
     expect(result.current[0]).toBe("init");
     expect(window.localStorage.getItem("name")).toBe("\"init\"");
   });
+
+  it("restores saved value from localStorage", () => {
+    window.localStorage.setItem("count", "7");
+
+    const { result } = renderHook(() => useLocalStorage("count", 1));
+
+    expect(result.current[0]).toBe(7);
+  });
 });

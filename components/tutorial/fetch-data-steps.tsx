@@ -8,9 +8,9 @@ const create = `create table notes (
 
 insert into notes(title)
 values
-  ('Today I created a Supabase project.'),
-  ('I added some data and queried it from Next.js.'),
-  ('It was awesome!');
+  ('Сегодня я создал проект Supabase.'),
+  ('Я добавил данные и запросил их из Next.js.'),
+  ('Получилось отлично!');
 `.trim();
 
 const rls = `alter table notes enable row level security;
@@ -52,9 +52,9 @@ export default function Page() {
 export function FetchDataSteps() {
   return (
     <ol className="flex flex-col gap-6">
-      <TutorialStep title="Create some tables and insert some data">
+      <TutorialStep title="Создайте таблицы и добавьте данные">
         <p>
-          Head over to the{" "}
+          Перейдите в{" "}
           <a
             href="https://supabase.com/dashboard/project/_/editor"
             className="font-bold hover:underline text-foreground/80"
@@ -63,9 +63,9 @@ export function FetchDataSteps() {
           >
             Table Editor
           </a>{" "}
-          for your Supabase project to create a table and insert some example
-          data. If you&apos;re stuck for creativity, you can copy and paste the
-          following into the{" "}
+          вашего проекта Supabase, чтобы создать таблицу и добавить тестовые
+          данные. Если не знаете, какие данные использовать, скопируйте код
+          ниже в{" "}
           <a
             href="https://supabase.com/dashboard/project/_/sql/new"
             className="font-bold hover:underline text-foreground/80"
@@ -74,16 +74,15 @@ export function FetchDataSteps() {
           >
             SQL Editor
           </a>{" "}
-          and click RUN!
+          и нажмите RUN.
         </p>
         <CodeBlock code={create} />
       </TutorialStep>
 
-      <TutorialStep title="Enable Row Level Security (RLS)">
+      <TutorialStep title="Включите Row Level Security (RLS)">
         <p>
-          Supabase enables Row Level Security (RLS) by default. To query data
-          from your <code>notes</code> table, you need to add a policy. You can
-          do this in the{" "}
+          В Supabase RLS включён по умолчанию. Чтобы читать данные из таблицы{" "}
+          <code>notes</code>, нужно добавить политику. Это можно сделать в{" "}
           <a
             href="https://supabase.com/dashboard/project/_/editor"
             className="font-bold hover:underline text-foreground/80"
@@ -92,7 +91,7 @@ export function FetchDataSteps() {
           >
             Table Editor
           </a>{" "}
-          or via the{" "}
+          или через{" "}
           <a
             href="https://supabase.com/dashboard/project/_/sql/new"
             className="font-bold hover:underline text-foreground/80"
@@ -103,50 +102,46 @@ export function FetchDataSteps() {
           </a>
           .
         </p>
-        <p>
-          For example, you can run the following SQL to allow public read
-          access:
-        </p>
+        <p>Например, выполните следующий SQL, чтобы разрешить публичное чтение:</p>
         <CodeBlock code={rls} />
         <p>
-          You can learn more about RLS in the{" "}
+          Подробнее о RLS — в{" "}
           <a
             href="https://supabase.com/docs/guides/auth/row-level-security"
             className="font-bold hover:underline text-foreground/80"
             target="_blank"
             rel="noreferrer"
           >
-            Supabase docs
+            документации Supabase
           </a>
           .
         </p>
       </TutorialStep>
 
-      <TutorialStep title="Query Supabase data from Next.js">
+      <TutorialStep title="Запросите данные Supabase из Next.js">
         <p>
-          To create a Supabase client and query data from an Async Server
-          Component, create a new page.tsx file at{" "}
+          Чтобы создать клиент Supabase и запросить данные из Async Server
+          Component, создайте файл page.tsx по пути{" "}
           <span className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-xs font-medium text-secondary-foreground border">
             /app/notes/page.tsx
           </span>{" "}
-          and add the following.
+          и добавьте код ниже.
         </p>
         <CodeBlock code={server} />
-        <p>Alternatively, you can use a Client Component.</p>
+        <p>Также можно использовать Client Component.</p>
         <CodeBlock code={client} />
       </TutorialStep>
 
-      <TutorialStep title="Explore the Supabase UI Library">
+      <TutorialStep title="Изучите библиотеку Supabase UI">
         <p>
-          Head over to the{" "}
+          Перейдите в{" "}
           <a
             href="https://supabase.com/ui"
             className="font-bold hover:underline text-foreground/80"
           >
             Supabase UI library
           </a>{" "}
-          and try installing some blocks. For example, you can install a
-          Realtime Chat block by running:
+          и попробуйте установить готовые блоки. Например, блок Realtime Chat:
         </p>
         <CodeBlock
           code={
@@ -155,8 +150,8 @@ export function FetchDataSteps() {
         />
       </TutorialStep>
 
-      <TutorialStep title="Build in a weekend and scale to millions!">
-        <p>You&apos;re ready to launch your product to the world! 🚀</p>
+      <TutorialStep title="Соберите за выходные и масштабируйтесь до миллионов!">
+        <p>Вы готовы запустить свой продукт в мир! 🚀</p>
       </TutorialStep>
     </ol>
   );

@@ -41,14 +41,13 @@ vi.mock("@heroui/react", () => ({
   CardBody: ({ children }: { children: ReactNode }) => <div>{children}</div>,
   CardFooter: ({ children }: { children: ReactNode }) => <div>{children}</div>,
   DateRangePicker: () => <div>DateRangePicker</div>,
-  Divider: () => <hr />,
 }));
 
 describe("DateDiffForm", () => {
   it("renders current difference", () => {
     render(<DateDiffForm />);
 
-    expect(screen.getByText("Difference: 2 day(s)")).toBeInTheDocument();
+    expect(screen.getAllByText("Разница: 2 дн.")).toHaveLength(2);
   });
 
   it("calls save handler by primary action", () => {
