@@ -3,13 +3,13 @@
 import { useEffect, useMemo, useState } from "react";
 import {
   Button,
-  Card,
-  CardBody,
-  CardFooter,
+  Calendar,
+  Label,
+  DateField,
   DatePicker,
   DateRangePicker,
-  Divider,
-  Tab,
+  RangeCalendar,
+  Separator,
   Tabs,
 } from "@heroui/react";
 import { parseDate, today as getToday } from "@internationalized/date";
@@ -22,6 +22,15 @@ import { useDateDiff } from "../model/use-date-diff";
 export type DateDiffFormProps = {
   className?: string;
   onEngage?: () => void;
+};
+
+const formatDateRu = (value: string): string => {
+  const [year, month, day] = value.split("-");
+  if (!year || !month || !day) {
+    return value;
+  }
+
+  return `${day}/${month}/${year}`;
 };
 
 const toRangeValue = (dateA: string, dateB: string): RangeValue<DateValue> | null => {
@@ -43,15 +52,6 @@ const toDateValue = (value: string): DateValue | null => {
   }
 
   return parseDate(value);
-};
-
-const formatDateRu = (value: string): string => {
-  const [year, month, day] = value.split("-");
-  if (!year || !month || !day) {
-    return value;
-  }
-
-  return `${day}/${month}/${year}`;
 };
 
 const getModeTitle = (mode: string): string => {
@@ -92,30 +92,6 @@ export const DateDiffForm = ({ className, onEngage }: DateDiffFormProps) => {
     setIsHydrated(true);
   }, []);
 
-  const handleRangeChange = (value: RangeValue<DateValue> | null) => {
-    onEngage?.();
-    if (!value) {
-      return;
-    }
-
-    setDateA(value.start.toString());
-    setDateB(value.end.toString());
-  };
-
-  const handleSingleDateChange = (value: DateValue | null, type: "from" | "to") => {
-    onEngage?.();
-    if (!value) {
-      return;
-    }
-
-    if (type === "from") {
-      setDateA(value.toString());
-      return;
-    }
-
-    setDateB(value.toString());
-  };
-
   const handleCopy = async () => {
     onEngage?.();
     const copied = await copyShareText();
@@ -129,63 +105,184 @@ export const DateDiffForm = ({ className, onEngage }: DateDiffFormProps) => {
       onPointerDownCapture={onEngage}
     >
       <Tabs
-        aria-label="Режим расчета"
         selectedKey={mode}
         onSelectionChange={(key) => {
           onEngage?.();
           setMode(String(key));
         }}
-        color="primary"
       >
-        <Tab key={DateDiffModes.RANGE} title="Между датами" />
-        <Tab key={DateDiffModes.UNTIL} title="До даты" />
-        <Tab key={DateDiffModes.SINCE} title="С даты" />
+        <Tabs.ListContainer>
+          <Tabs.List aria-label="Режим расчета">
+            <Tabs.Tab id={DateDiffModes.RANGE}>
+              Между датами
+              <Tabs.Indicator />
+            </Tabs.Tab>
+            <Tabs.Tab id={DateDiffModes.UNTIL}>
+              До даты
+              <Tabs.Indicator />
+            </Tabs.Tab>
+            <Tabs.Tab id={DateDiffModes.SINCE}>
+              С даты
+              <Tabs.Indicator />
+            </Tabs.Tab>
+          </Tabs.List>
+        </Tabs.ListContainer>
       </Tabs>
 
       {mode === DateDiffModes.RANGE ? (
         <DateRangePicker
           className="mt-4 w-full"
-          label="Период"
-          labelPlacement="outside"
           value={toRangeValue(dateA, dateB)}
-          onChange={handleRangeChange}
-          visibleMonths={2}
           maxValue={maxDateValue}
-        />
+          onChange={(value) => {
+            onEngage?.();
+            if (!value) {
+              return;
+            }
+            setDateA(value.start.toString());
+            setDateB(value.end.toString());
+          }}
+        >
+          <Label>Период</Label>
+          <DateField.Group fullWidth>
+            <DateField.Input slot="start">
+              {(segment) => <DateField.Segment segment={segment} />}
+            </DateField.Input>
+            <DateRangePicker.RangeSeparator />
+            <DateField.Input slot="end">
+              {(segment) => <DateField.Segment segment={segment} />}
+            </DateField.Input>
+            <DateField.Suffix>
+              <DateRangePicker.Trigger>
+                <DateRangePicker.TriggerIndicator />
+              </DateRangePicker.Trigger>
+            </DateField.Suffix>
+          </DateField.Group>
+          <DateRangePicker.Popover>
+            <RangeCalendar aria-label="Период">
+              <RangeCalendar.Header>
+                <RangeCalendar.YearPickerTrigger>
+                  <RangeCalendar.YearPickerTriggerHeading />
+                  <RangeCalendar.YearPickerTriggerIndicator />
+                </RangeCalendar.YearPickerTrigger>
+                <RangeCalendar.NavButton slot="previous" />
+                <RangeCalendar.NavButton slot="next" />
+              </RangeCalendar.Header>
+              <RangeCalendar.Grid>
+                <RangeCalendar.GridHeader>
+                  {(day) => <RangeCalendar.HeaderCell>{day}</RangeCalendar.HeaderCell>}
+                </RangeCalendar.GridHeader>
+                <RangeCalendar.GridBody>
+                  {(date) => <RangeCalendar.Cell date={date} />}
+                </RangeCalendar.GridBody>
+              </RangeCalendar.Grid>
+            </RangeCalendar>
+          </DateRangePicker.Popover>
+        </DateRangePicker>
       ) : mode === DateDiffModes.UNTIL ? (
         <DatePicker
           className="mt-4 w-full"
-          label="Дата назначения"
-          labelPlacement="outside"
           value={toDateValue(dateB)}
-          onChange={(value) => handleSingleDateChange(value, "to")}
           maxValue={maxDateValue}
-        />
+          onChange={(value) => {
+            onEngage?.();
+            if (!value) {
+              return;
+            }
+            setDateB(value.toString());
+          }}
+        >
+          <Label>Дата назначения</Label>
+          <DateField.Group fullWidth>
+            <DateField.Input>
+              {(segment) => <DateField.Segment segment={segment} />}
+            </DateField.Input>
+            <DateField.Suffix>
+              <DatePicker.Trigger>
+                <DatePicker.TriggerIndicator />
+              </DatePicker.Trigger>
+            </DateField.Suffix>
+          </DateField.Group>
+          <DatePicker.Popover>
+            <Calendar aria-label="Дата назначения">
+              <Calendar.Header>
+                <Calendar.YearPickerTrigger>
+                  <Calendar.YearPickerTriggerHeading />
+                  <Calendar.YearPickerTriggerIndicator />
+                </Calendar.YearPickerTrigger>
+                <Calendar.NavButton slot="previous" />
+                <Calendar.NavButton slot="next" />
+              </Calendar.Header>
+              <Calendar.Grid>
+                <Calendar.GridHeader>
+                  {(day) => <Calendar.HeaderCell>{day}</Calendar.HeaderCell>}
+                </Calendar.GridHeader>
+                <Calendar.GridBody>
+                  {(date) => <Calendar.Cell date={date} />}
+                </Calendar.GridBody>
+              </Calendar.Grid>
+            </Calendar>
+          </DatePicker.Popover>
+        </DatePicker>
       ) : (
         <DatePicker
           className="mt-4 w-full"
-          label="Начальная дата"
-          labelPlacement="outside"
           value={toDateValue(dateA)}
-          onChange={(value) => handleSingleDateChange(value, "from")}
           maxValue={maxDateValue}
-        />
+          onChange={(value) => {
+            onEngage?.();
+            if (!value) {
+              return;
+            }
+            setDateA(value.toString());
+          }}
+        >
+          <Label>Начальная дата</Label>
+          <DateField.Group fullWidth>
+            <DateField.Input>
+              {(segment) => <DateField.Segment segment={segment} />}
+            </DateField.Input>
+            <DateField.Suffix>
+              <DatePicker.Trigger>
+                <DatePicker.TriggerIndicator />
+              </DatePicker.Trigger>
+            </DateField.Suffix>
+          </DateField.Group>
+          <DatePicker.Popover>
+            <Calendar aria-label="Начальная дата">
+              <Calendar.Header>
+                <Calendar.YearPickerTrigger>
+                  <Calendar.YearPickerTriggerHeading />
+                  <Calendar.YearPickerTriggerIndicator />
+                </Calendar.YearPickerTrigger>
+                <Calendar.NavButton slot="previous" />
+                <Calendar.NavButton slot="next" />
+              </Calendar.Header>
+              <Calendar.Grid>
+                <Calendar.GridHeader>
+                  {(day) => <Calendar.HeaderCell>{day}</Calendar.HeaderCell>}
+                </Calendar.GridHeader>
+                <Calendar.GridBody>
+                  {(date) => <Calendar.Cell date={date} />}
+                </Calendar.GridBody>
+              </Calendar.Grid>
+            </Calendar>
+          </DatePicker.Popover>
+        </DatePicker>
       )}
 
       <div className="mt-4 flex flex-wrap gap-2">
-        <Button size="sm" variant="flat" onPress={() => { onEngage?.(); applyPreset("today"); }}>Сегодня</Button>
-        <Button size="sm" variant="flat" onPress={() => { onEngage?.(); applyPreset("plus7"); }}>+7 дней</Button>
-        <Button size="sm" variant="flat" onPress={() => { onEngage?.(); applyPreset("plus30"); }}>+30 дней</Button>
-        <Button size="sm" variant="flat" onPress={() => { onEngage?.(); applyPreset("monthEnd"); }}>Конец месяца</Button>
+        <Button size="sm" variant="tertiary" onPress={() => { onEngage?.(); applyPreset("today"); }}>Сегодня</Button>
+        <Button size="sm" variant="tertiary" onPress={() => { onEngage?.(); applyPreset("plus7"); }}>+7 дней</Button>
+        <Button size="sm" variant="tertiary" onPress={() => { onEngage?.(); applyPreset("plus30"); }}>+30 дней</Button>
+        <Button size="sm" variant="tertiary" onPress={() => { onEngage?.(); applyPreset("monthEnd"); }}>Конец месяца</Button>
       </div>
 
-      <Card className="mt-4" shadow="none">
-        <CardBody className="text-lg font-semibold">{resultLabel}</CardBody>
-      </Card>
+      <p className="mt-4 text-4xl font-bold text-slate-900">{resultLabel}</p>
 
-      <div className="mt-4 grid gap-2 sm:grid-cols-2">
-        <Button color="primary" onPress={() => { onEngage?.(); saveCalculation(); }}>Сохранить расчет</Button>
-        <Button variant="bordered" onPress={handleCopy}>Копировать результат</Button>
+      <div className="mt-4 flex flex-col gap-2">
+        <Button fullWidth variant="primary" onPress={() => { onEngage?.(); saveCalculation(); }}>Сохранить расчет</Button>
+        <Button fullWidth variant="outline" onPress={handleCopy}>Копировать результат</Button>
       </div>
 
       {copyStatus === "ok" ? <p className="mt-2 text-sm text-emerald-600">Скопировано.</p> : null}
@@ -194,7 +291,7 @@ export const DateDiffForm = ({ className, onEngage }: DateDiffFormProps) => {
       <div className="mt-8 flex items-center justify-between gap-3">
         <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-600">История</h3>
         {hasHistory ? (
-          <Button size="sm" variant="light" onPress={clearSavedHistory}>Очистить</Button>
+          <Button size="sm" variant="tertiary" onPress={clearSavedHistory}>Очистить</Button>
         ) : null}
       </div>
 
@@ -204,26 +301,26 @@ export const DateDiffForm = ({ className, onEngage }: DateDiffFormProps) => {
         <ul className="mt-2 max-h-64 space-y-3 overflow-y-auto pr-1 text-sm">
           {history.map((item) => (
             <li key={item.id}>
-              <Card
-                isPressable
-                shadow="none"
+              <Button
+                fullWidth
+                variant="tertiary"
+                className="h-auto justify-start rounded-2xl border border-slate-200 bg-white px-4 py-3 text-left hover:bg-slate-50"
                 onPress={() => applyHistoryItem(item)}
-                className="w-full border border-slate-200 bg-white"
               >
-                <CardBody className="space-y-2">
+                <div className="w-full space-y-2">
                   <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
                     {getModeTitle(item.mode)}
                   </p>
                   <p className="text-lg font-semibold text-slate-800">
                     {formatDateRu(item.dateA)} {"→"} {formatDateRu(item.dateB)}
                   </p>
-                </CardBody>
-                <Divider />
-                <CardFooter className="justify-between text-slate-600">
-                  <span>Разница</span>
-                  <span className="font-semibold text-slate-800">{item.daysDiff} дн.</span>
-                </CardFooter>
-              </Card>
+                  <Separator />
+                  <div className="flex items-center justify-between text-slate-600">
+                    <span>Разница</span>
+                    <span className="font-semibold text-slate-800">{item.daysDiff} дн.</span>
+                  </div>
+                </div>
+              </Button>
             </li>
           ))}
         </ul>
