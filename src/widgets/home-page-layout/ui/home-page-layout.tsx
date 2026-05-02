@@ -1,4 +1,4 @@
-import { Suspense, useCallback, useRef, type ReactNode } from 'react'
+import { Suspense, type ReactNode } from 'react'
 
 import { DateDiffForm } from '@/entities/date-diff'
 
@@ -17,23 +17,6 @@ export const HomePageLayout = ({
   initialTo,
   onUrlSync,
 }: HomePageLayoutProps) => {
-  const calculatorSectionRef = useRef<HTMLElement | null>(null)
-  const hasAutoScrolledRef = useRef(false)
-
-  const handleEngage = useCallback(() => {
-    if (hasAutoScrolledRef.current) {
-      return
-    }
-
-    hasAutoScrolledRef.current = true
-    window.setTimeout(() => {
-      calculatorSectionRef.current?.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start',
-      })
-    }, 120)
-  }, [])
-
   return (
     <main className="min-h-screen bg-gradient-to-b from-amber-50 via-white to-sky-50 text-slate-900">
       <div className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6">
@@ -50,11 +33,10 @@ export const HomePageLayout = ({
           </p>
         </section>
 
-        <section ref={calculatorSectionRef} className="mt-10">
+        <section className="mt-10">
           <Suspense fallback={<div className="h-[420px]" />}>
             <DateDiffForm
               className="mx-auto max-w-4xl"
-              onEngage={handleEngage}
               initialMode={initialMode}
               initialFrom={initialFrom}
               initialTo={initialTo}
