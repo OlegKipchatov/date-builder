@@ -22,6 +22,27 @@ export const Route = createFileRoute('/')({
     from: typeof search.from === 'string' ? search.from : undefined,
     to: typeof search.to === 'string' ? search.to : undefined,
   }),
+  head: () => ({
+    meta: [
+      {
+        title: 'Date Builder — посчитать разницу между датами онлайн',
+      },
+      {
+        name: 'description',
+        content:
+          'Бесплатный онлайн-калькулятор дат для быстрого расчета разницы между двумя датами и сохранения результата в ссылке.',
+      },
+      {
+        property: 'og:title',
+        content: 'Date Builder — посчитать разницу между датами онлайн',
+      },
+      {
+        property: 'og:description',
+        content:
+          'Мгновенно считайте разницу между датами и делитесь результатом через URL.',
+      },
+    ],
+  }),
   component: HomePage,
 })
 

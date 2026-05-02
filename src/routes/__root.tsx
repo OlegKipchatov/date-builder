@@ -32,7 +32,24 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         content: 'width=device-width, initial-scale=1',
       },
       {
-        title: 'TanStack Start Starter',
+        title: 'Date Builder — калькулятор разницы между датами',
+      },
+      {
+        name: 'description',
+        content:
+          'Date Builder помогает быстро посчитать разницу между датами в днях, неделях, месяцах и годах, сохранить историю и поделиться расчетом по ссылке.',
+      },
+      {
+        name: 'robots',
+        content: 'index, follow',
+      },
+      {
+        property: 'og:site_name',
+        content: 'Date Builder',
+      },
+      {
+        property: 'og:type',
+        content: 'website',
       },
     ],
     links: [
@@ -49,7 +66,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
   const { queryClient } = Route.useRouteContext()
 
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="ru" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
         <HeadContent />
