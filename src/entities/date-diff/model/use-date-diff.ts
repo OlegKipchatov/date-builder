@@ -16,8 +16,6 @@ import { getPresetDates } from "./date-diff-presets.mjs";
 import {
   addHistoryItem,
   CalculationHistoryItem,
-  clearHistory,
-  getHistory,
   historyStorageKey,
 } from "./history";
 
@@ -58,9 +56,9 @@ export const useDateDiff = (): UseDateDiffResult => {
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [history, setHistory] = useLocalStorage<CalculationHistoryItem[]>(
+  const [history, setHistory, clearHistoryState] = useLocalStorage<CalculationHistoryItem[]>(
     historyStorageKey,
-    getHistory(),
+    [],
   );
 
   useEffect(() => {
@@ -150,9 +148,8 @@ export const useDateDiff = (): UseDateDiffResult => {
   );
 
   const clearSavedHistory = useCallback(() => {
-    clearHistory();
-    setHistory([]);
-  }, [setHistory]);
+    clearHistoryState();
+  }, [clearHistoryState]);
 
   const copyShareText = useCallback(async () => {
     const text = buildShareText({ mode, dateA, dateB, daysDiff });

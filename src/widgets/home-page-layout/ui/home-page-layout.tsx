@@ -30,7 +30,7 @@ export const HomePageLayout = ({ children }: HomePageLayoutProps) => {
       <div className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6">
         <section className="space-y-6">
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-sky-700">Date Builder</p>
-          <h1 className="text-4xl font-black leading-tight sm:text-5xl">Калькулятор разницы дат без регистрации</h1>
+          <h1 className="text-4xl font-black leading-tight sm:text-5xl">Калькулятор разницы дат</h1>
           <p className="max-w-3xl text-lg text-slate-600">Считайте дни между датами, до события и с выбранной даты. Сохраняйте историю локально и делитесь результатом за один клик.</p>
         </section>
 

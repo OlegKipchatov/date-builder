@@ -280,7 +280,7 @@ export const DateDiffForm = ({ className, onEngage }: DateDiffFormProps) => {
 
       <p className="mt-4 text-4xl font-bold text-slate-900">{resultLabel}</p>
 
-      <div className="mt-4 flex flex-col gap-2">
+      <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
         <Button fullWidth variant="primary" onPress={() => { onEngage?.(); saveCalculation(); }}>Сохранить расчет</Button>
         <Button fullWidth variant="outline" onPress={handleCopy}>Копировать результат</Button>
       </div>
