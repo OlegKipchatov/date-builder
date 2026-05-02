@@ -96,12 +96,28 @@ export const DateDiffForm = ({
 
   const [copyStatus, setCopyStatus] = useState<'idle' | 'ok' | 'error'>('idle')
   const [isHydrated, setIsHydrated] = useState(false)
+  const [showTwoMonths, setShowTwoMonths] = useState(false)
 
   const maxDateValue = useMemo(() => getToday('UTC').add({ years: 20 }), [])
   const hasHistory = isHydrated && history.length > 0
 
   useEffect(() => {
     setIsHydrated(true)
+  }, [])
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(min-width: 768px)')
+
+    const applyMedia = () => {
+      setShowTwoMonths(mediaQuery.matches)
+    }
+
+    applyMedia()
+    mediaQuery.addEventListener('change', applyMedia)
+
+    return () => {
+      mediaQuery.removeEventListener('change', applyMedia)
+    }
   }, [])
 
   const handleCopy = async () => {
@@ -164,6 +180,65 @@ export const DateDiffForm = ({
               </DateRangePicker.Trigger>
             </DateField.Suffix>
           </DateField.Group>
+          <DateRangePicker.Popover
+            placement="bottom end"
+            offset={10}
+            containerPadding={8}
+            className="w-[calc(100vw-1rem)] max-w-[22rem] rounded-2xl p-2.5 md:w-auto md:max-w-none md:min-w-[40rem] md:p-3"
+          >
+            <RangeCalendar
+              aria-label="Период"
+              visibleDuration={{ months: showTwoMonths ? 2 : 1 }}
+              className="w-full"
+            >
+              <RangeCalendar.Header className="md:mb-2">
+                <RangeCalendar.YearPickerTrigger>
+                  <RangeCalendar.YearPickerTriggerHeading className="md:text-xl md:font-semibold md:text-slate-800" />
+                  <RangeCalendar.YearPickerTriggerIndicator />
+                </RangeCalendar.YearPickerTrigger>
+                <RangeCalendar.NavButton slot="previous" className="md:h-9 md:w-9" />
+                <RangeCalendar.NavButton slot="next" className="md:h-9 md:w-9" />
+              </RangeCalendar.Header>
+              <div className="flex flex-col gap-2 md:flex-row md:gap-4 md:items-start">
+                <RangeCalendar.Grid className="w-full">
+                  <RangeCalendar.GridHeader>
+                    {(day) => (
+                      <RangeCalendar.HeaderCell className="md:pb-1.5 md:text-sm md:font-semibold md:text-slate-500">
+                        {day}
+                      </RangeCalendar.HeaderCell>
+                    )}
+                  </RangeCalendar.GridHeader>
+                  <RangeCalendar.GridBody>
+                    {(date) => (
+                      <RangeCalendar.Cell
+                        date={date}
+                        className="md:text-lg"
+                      />
+                    )}
+                  </RangeCalendar.GridBody>
+                </RangeCalendar.Grid>
+                {showTwoMonths ? (
+                  <RangeCalendar.Grid offset={{ months: 1 }} className="w-full">
+                    <RangeCalendar.GridHeader>
+                      {(day) => (
+                        <RangeCalendar.HeaderCell className="md:pb-1.5 md:text-sm md:font-semibold md:text-slate-500">
+                          {day}
+                        </RangeCalendar.HeaderCell>
+                      )}
+                    </RangeCalendar.GridHeader>
+                    <RangeCalendar.GridBody>
+                      {(date) => (
+                        <RangeCalendar.Cell
+                          date={date}
+                          className="md:text-lg"
+                        />
+                      )}
+                    </RangeCalendar.GridBody>
+                  </RangeCalendar.Grid>
+                ) : null}
+              </div>
+            </RangeCalendar>
+          </DateRangePicker.Popover>
         </DateRangePicker>
       ) : mode === DateDiffModes.UNTIL ? (
         <DatePicker className="mt-4 w-full" value={toDateValue(dateB)} maxValue={maxDateValue} onChange={(value) => { onEngage?.(); if (value) setDateB(value.toString()) }}>
@@ -177,7 +252,24 @@ export const DateDiffForm = ({
             </DateField.Suffix>
           </DateField.Group>
           <DatePicker.Popover>
-            <Calendar aria-label="Дата назначения" />
+            <Calendar aria-label="Дата назначения">
+              <Calendar.Header>
+                <Calendar.YearPickerTrigger>
+                  <Calendar.YearPickerTriggerHeading />
+                  <Calendar.YearPickerTriggerIndicator />
+                </Calendar.YearPickerTrigger>
+                <Calendar.NavButton slot="previous" />
+                <Calendar.NavButton slot="next" />
+              </Calendar.Header>
+              <Calendar.Grid>
+                <Calendar.GridHeader>
+                  {(day) => <Calendar.HeaderCell>{day}</Calendar.HeaderCell>}
+                </Calendar.GridHeader>
+                <Calendar.GridBody>
+                  {(date) => <Calendar.Cell date={date} />}
+                </Calendar.GridBody>
+              </Calendar.Grid>
+            </Calendar>
           </DatePicker.Popover>
         </DatePicker>
       ) : (
@@ -192,7 +284,24 @@ export const DateDiffForm = ({
             </DateField.Suffix>
           </DateField.Group>
           <DatePicker.Popover>
-            <Calendar aria-label="Начальная дата" />
+            <Calendar aria-label="Начальная дата">
+              <Calendar.Header>
+                <Calendar.YearPickerTrigger>
+                  <Calendar.YearPickerTriggerHeading />
+                  <Calendar.YearPickerTriggerIndicator />
+                </Calendar.YearPickerTrigger>
+                <Calendar.NavButton slot="previous" />
+                <Calendar.NavButton slot="next" />
+              </Calendar.Header>
+              <Calendar.Grid>
+                <Calendar.GridHeader>
+                  {(day) => <Calendar.HeaderCell>{day}</Calendar.HeaderCell>}
+                </Calendar.GridHeader>
+                <Calendar.GridBody>
+                  {(date) => <Calendar.Cell date={date} />}
+                </Calendar.GridBody>
+              </Calendar.Grid>
+            </Calendar>
           </DatePicker.Popover>
         </DatePicker>
       )}
