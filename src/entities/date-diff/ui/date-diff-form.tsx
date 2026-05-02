@@ -4,10 +4,10 @@ import { useEffect, useMemo, useState } from "react";
 import {
   Button,
   Calendar,
-  Label,
   DateField,
   DatePicker,
   DateRangePicker,
+  Label,
   RangeCalendar,
   Separator,
   Tabs,
@@ -33,7 +33,10 @@ const formatDateRu = (value: string): string => {
   return `${day}/${month}/${year}`;
 };
 
-const toRangeValue = (dateA: string, dateB: string): RangeValue<DateValue> | null => {
+const toRangeValue = (
+  dateA: string,
+  dateB: string,
+): RangeValue<DateValue> | null => {
   if (!dateA || !dateB) {
     return null;
   }
