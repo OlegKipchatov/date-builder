@@ -41,7 +41,7 @@ If you prefer not to use Tailwind CSS:
 
 ## Setting up Neon
 
-When running the `dev` command, `vite-plugin-neon-new` will identify there is not a database setup. It will then create and seed a claimable database.
+Neon integration is configured via `@neondatabase/serverless` and Drizzle. Set `DATABASE_URL` in `.env.local` before running database commands.
 
 It is the same process as [Neon Launchpad](https://neon.new).
 

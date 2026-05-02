@@ -16,7 +16,7 @@ Before substantial work:
 
 ### Commands run
 - `npx @tanstack/cli@latest create my-tanstack-app --agent --add-ons neon,drizzle,sentry,better-auth,tanstack-query`
-- `npm install --legacy-peer-deps` (required due scaffolded peer conflict)
+- `npm install --legacy-peer-deps` (temporary bootstrap workaround, later removed)
 - `npx @tanstack/intent@latest install`
 - `npx @tanstack/intent@latest list`
 - `npx @tanstack/intent@latest load @tanstack/start-client-core#start-core`
@@ -66,10 +66,8 @@ Before substantial work:
 - Preserve existing UX copy and HeroUI-based interaction patterns during migration.
 
 ### Known gotchas
-- Scaffold dependency conflict observed:
-  - `vite-plugin-neon-new@0.8.0` peers on Vite `^6 || ^7` while scaffold resolved Vite `^8`.
-  - Temporary unblock: install with `--legacy-peer-deps`.
-  - Follow-up needed: align plugin/Vite versions to remove peer mismatch risk.
+- Scaffold dependency conflict was resolved by removing `vite-plugin-neon-new` (peer range incompatible with Vite 8).
+- Neon support remains via `@neondatabase/serverless` and Drizzle (`DATABASE_URL`).
 - TanStack Start code is isomorphic by default; server-only logic must use proper server boundaries.
 
 ### Next steps
@@ -77,4 +75,4 @@ Before substantial work:
 - Port auth behavior from legacy flow into Better Auth integration route guards/server middleware as needed.
 - Reconcile data fetching patterns with TanStack Query loaders/server functions where applicable.
 - Add regression tests around migrated date-diff behavior and URL state sync.
-- Resolve Vite/Neon plugin peer mismatch cleanly (version pin or integration update).
+- Keep validating Neon + Drizzle workflows without the removed Vite plugin path.
