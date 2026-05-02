@@ -8,6 +8,13 @@ Before substantial work:
 - Multiple matches: prefer the most specific local skill for the package or concern you are changing; load additional skills only when the task spans multiple packages or concerns.
 <!-- intent-skills:end -->
 
+## Testing requirements
+
+- Add unit tests for all new business logic in `src/entities/*/model`, `src/features/*/model`, and shared helpers in `src/shared/lib`.
+- Add functional tests for user-visible flows (for example: calculations, history save/clear, and state restoration).
+- Add behavioral tests for interaction details (button actions, callbacks, empty/loading states, and component reactions to props/state).
+- Keep Supabase integration out of scope for mandatory coverage unless explicitly requested.
+
 ## Migration Context (Durable)
 
 ### Original brief
