@@ -13,8 +13,9 @@ const defaultUrl = process.env.VERCEL_URL
 
 export const metadata: Metadata = {
   metadataBase: new URL(defaultUrl),
-  title: "Next.js and Supabase Starter Kit",
-  description: "The fastest way to build apps with Next.js and Supabase",
+  title: "Date Builder - Калькулятор разницы дат",
+  description:
+    "Считайте разницу между датами, дни до события и сколько дней прошло. Без регистрации.",
 };
 
 export const viewport: Viewport = {
@@ -24,7 +25,7 @@ export const viewport: Viewport = {
 
 const RootLayout = ({ children }: RootLayoutProps) => {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="ru" suppressHydrationWarning>
       <body className="antialiased">
         <Providers>{children}</Providers>
       </body>

@@ -1,30 +1,39 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import { useLocalStorage } from "@/src/shared/lib/useLocalStorage";
 
-import { getDaysDiff, getTodayDate } from "./date-diff-utils.mjs";
+import { getTodayDate } from "./date-diff-utils.mjs";
+import {
+  buildShareText,
+  DateDiffModes,
+  getCalculationResult,
+  getModeDescription,
+} from "./date-diff-modes.mjs";
+import { getPresetDates } from "./date-diff-presets.mjs";
 import {
   addHistoryItem,
   CalculationHistoryItem,
-  clearHistory,
-  getHistory,
   historyStorageKey,
 } from "./history";
 
 export type UseDateDiffResult = {
+  mode: string;
   dateA: string;
   dateB: string;
   daysDiff: number;
+  resultLabel: string;
   history: CalculationHistoryItem[];
+  setMode: (value: string) => void;
   setDateA: (value: string) => void;
   setDateB: (value: string) => void;
-  recalculate: () => number;
   saveCalculation: () => void;
+  applyPreset: (preset: string) => void;
   applyHistoryItem: (item: CalculationHistoryItem) => void;
   clearSavedHistory: () => void;
+  copyShareText: () => Promise<boolean>;
 };
 
 const isValidDateParam = (value: string | null): value is string => {
@@ -35,36 +44,53 @@ const isValidDateParam = (value: string | null): value is string => {
   return !Number.isNaN(new Date(`${value}T00:00:00`).getTime());
 };
 
+const isValidMode = (value: string | null): value is string => {
+  return Object.values(DateDiffModes).includes(value || "");
+};
+
 export const useDateDiff = (): UseDateDiffResult => {
-  const [dateA, setDateA] = useState<string>("");
-  const [dateB, setDateB] = useState<string>("2000-01-01");
-  const [daysDiff, setDaysDiff] = useState<number>(0);
+  const today = useMemo(() => getTodayDate(), []);
+  const [mode, setMode] = useState<string>(DateDiffModes.RANGE);
+  const [dateA, setDateA] = useState<string>(today);
+  const [dateB, setDateB] = useState<string>(today);
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [history, setHistory] = useLocalStorage<CalculationHistoryItem[]>(
+  const [history, setHistory, clearHistoryState] = useLocalStorage<CalculationHistoryItem[]>(
     historyStorageKey,
-    getHistory(),
+    [],
   );
 
   useEffect(() => {
     const fromParam = searchParams.get("from");
     const toParam = searchParams.get("to");
+    const modeParam = searchParams.get("mode");
 
-    if (isValidDateParam(fromParam) && isValidDateParam(toParam)) {
-      setDateA(fromParam);
-      setDateB(toParam);
-
-      return;
+    if (isValidMode(modeParam)) {
+      setMode(modeParam);
     }
 
-    setDateA(getTodayDate());
+    if (isValidDateParam(fromParam)) {
+      setDateA(fromParam);
+    }
+
+    if (isValidDateParam(toParam)) {
+      setDateB(toParam);
+    }
   }, [searchParams]);
 
-  const updateSearchParams = useCallback(
-    (nextDateA: string, nextDateB: string) => {
-      const nextSearchParams = new URLSearchParams(searchParams.toString());
+  const daysDiff = useMemo(() => {
+    return getCalculationResult({ mode, dateA, dateB, today });
+  }, [dateA, dateB, mode, today]);
 
+  const resultLabel = useMemo(() => {
+    return getModeDescription(mode, daysDiff);
+  }, [daysDiff, mode]);
+
+  const updateSearchParams = useCallback(
+    (nextMode: string, nextDateA: string, nextDateB: string) => {
+      const nextSearchParams = new URLSearchParams(searchParams.toString());
+      nextSearchParams.set("mode", nextMode);
       nextSearchParams.set("from", nextDateA);
       nextSearchParams.set("to", nextDateB);
 
@@ -75,62 +101,81 @@ export const useDateDiff = (): UseDateDiffResult => {
     [pathname, router, searchParams],
   );
 
-  const recalculate = useCallback((): number => {
-    if (!dateA || !dateB) {
-      setDaysDiff(0);
-      return 0;
-    }
-
-    const nextDaysDiff = getDaysDiff(dateA, dateB);
-    setDaysDiff(nextDaysDiff);
-
-    return nextDaysDiff;
-  }, [dateA, dateB]);
-
-  useEffect(() => {
-    recalculate();
-  }, [recalculate]);
-
   const saveCalculation = useCallback(() => {
-    const calculatedDaysDiff = recalculate();
-
-    updateSearchParams(dateA, dateB);
+    updateSearchParams(mode, dateA, dateB);
 
     const newHistoryItem: CalculationHistoryItem = {
       id: `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`,
+      mode,
       dateA,
       dateB,
-      daysDiff: calculatedDaysDiff,
+      daysDiff,
       timestamp: new Date().toISOString(),
     };
 
     setHistory(addHistoryItem(newHistoryItem));
-  }, [dateA, dateB, recalculate, setHistory, updateSearchParams]);
+  }, [dateA, dateB, daysDiff, mode, setHistory, updateSearchParams]);
+
+  const applyPreset = useCallback(
+    (preset: string) => {
+      if (preset === "today") {
+        const presetDates = getPresetDates(preset, today);
+        setDateA(presetDates.dateA);
+        setDateB(presetDates.dateB);
+        return;
+      }
+
+      if (mode === DateDiffModes.RANGE || mode === DateDiffModes.UNTIL) {
+        const presetDates = getPresetDates(preset, dateB || today);
+        setDateB(presetDates.dateB);
+        return;
+      }
+
+      const presetDates = getPresetDates(preset, dateA || today);
+      setDateA(presetDates.dateB);
+    },
+    [dateA, dateB, mode, today],
+  );
 
   const applyHistoryItem = useCallback(
     (item: CalculationHistoryItem) => {
-      updateSearchParams(item.dateA, item.dateB);
+      setMode(item.mode);
       setDateA(item.dateA);
       setDateB(item.dateB);
+      updateSearchParams(item.mode, item.dateA, item.dateB);
     },
     [updateSearchParams],
   );
 
   const clearSavedHistory = useCallback(() => {
-    clearHistory();
-    setHistory([]);
-  }, [setHistory]);
+    clearHistoryState();
+  }, [clearHistoryState]);
+
+  const copyShareText = useCallback(async () => {
+    const text = buildShareText({ mode, dateA, dateB, daysDiff });
+
+    try {
+      await navigator.clipboard.writeText(text);
+      return true;
+    } catch {
+      return false;
+    }
+  }, [dateA, dateB, daysDiff, mode]);
 
   return {
+    mode,
     dateA,
     dateB,
     daysDiff,
+    resultLabel,
     history,
+    setMode,
     setDateA,
     setDateB,
-    recalculate,
     saveCalculation,
+    applyPreset,
     applyHistoryItem,
     clearSavedHistory,
+    copyShareText,
   };
 };

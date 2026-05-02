@@ -10,3 +10,7 @@
 - Add functional tests for user-visible flows (for example: calculations, history save/clear, and state restoration).
 - Add behavioral tests for interaction details (button actions, callbacks, empty/loading states, and component reactions to props/state).
 - Keep Supabase integration out of scope for mandatory coverage unless explicitly requested.
+
+## Skills
+### Available skills
+- heroui-react: HeroUI v3 skill for components, theming, and usage patterns. (file: /Users/olegkipchatov/Desktop/date-builder/.codex/skills/heroui-react/SKILL.md)

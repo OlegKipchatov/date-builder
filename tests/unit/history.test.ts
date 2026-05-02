@@ -15,6 +15,7 @@ describe("history", () => {
   it("adds new items to the beginning", () => {
     const first = {
       id: "1",
+      mode: "range",
       dateA: "2024-01-01",
       dateB: "2024-01-10",
       daysDiff: 9,
@@ -22,6 +23,7 @@ describe("history", () => {
     };
     const second = {
       id: "2",
+      mode: "until",
       dateA: "2024-02-01",
       dateB: "2024-02-03",
       daysDiff: 2,
@@ -37,6 +39,7 @@ describe("history", () => {
   it("clears persisted history", () => {
     addHistoryItem({
       id: "x",
+      mode: "since",
       dateA: "2024-01-01",
       dateB: "2024-01-02",
       daysDiff: 1,
