@@ -5,7 +5,7 @@ import {
   clearHistory,
   getHistory,
   historyStorageKey,
-} from "@/src/entities/date-diff/model/history";
+} from "@/entities/date-diff/model/history";
 
 describe("history", () => {
   it("returns empty history by default", () => {

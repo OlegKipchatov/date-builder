@@ -2,14 +2,14 @@ import type { ReactNode } from "react";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { DateDiffForm } from "@/src/entities/date-diff/ui/date-diff-form";
+import { DateDiffForm } from "@/entities/date-diff/ui/date-diff-form";
 
 const saveCalculation = vi.fn();
 const clearSavedHistory = vi.fn();
 const applyHistoryItem = vi.fn();
 const copyShareText = vi.fn(async () => true);
 
-vi.mock("@/src/entities/date-diff/model/use-date-diff", () => ({
+vi.mock("@/entities/date-diff/model/use-date-diff", () => ({
   useDateDiff: () => ({
     mode: "range",
     dateA: "2024-01-01",

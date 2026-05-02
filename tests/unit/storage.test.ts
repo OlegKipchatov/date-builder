@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { getLS, removeLS, setLS } from "@/src/shared/lib/storage";
+import { getLS, removeLS, setLS } from "@/shared/lib/storage";
 
 describe("storage", () => {
   it("reads fallback when value is missing", () => {

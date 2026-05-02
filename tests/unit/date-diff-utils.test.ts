@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   getDaysDiff,
   getTodayDate,
-} from "@/src/entities/date-diff/model/date-diff-utils.mjs";
+} from "@/entities/date-diff/model/date-diff-utils";
 
 describe("date-diff-utils", () => {
   it("returns 0 for equal dates", () => {
