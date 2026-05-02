@@ -1,45 +1,43 @@
-"use client";
+import { useEffect, useState, type Dispatch, type SetStateAction } from 'react'
 
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
-
-import { getLS, removeLS, setLS } from "./storage";
+import { getLS, removeLS, setLS } from './storage'
 
 export type UseLocalStorageResult<T> = readonly [
   T,
   Dispatch<SetStateAction<T>>,
   () => void,
-];
+]
 
 export const useLocalStorage = <T,>(
   key: string,
   initialValue: T,
 ): UseLocalStorageResult<T> => {
-  const [value, setValue] = useState<T>(() => getLS<T>(key, initialValue));
+  const [value, setValue] = useState<T>(() => getLS<T>(key, initialValue))
 
   useEffect(() => {
     const handleStorage = (event: StorageEvent) => {
       if (event.key !== key) {
-        return;
+        return
       }
 
-      setValue(getLS<T>(key, initialValue));
-    };
+      setValue(getLS<T>(key, initialValue))
+    }
 
-    window.addEventListener("storage", handleStorage);
+    window.addEventListener('storage', handleStorage)
 
     return () => {
-      window.removeEventListener("storage", handleStorage);
-    };
-  }, [initialValue, key]);
+      window.removeEventListener('storage', handleStorage)
+    }
+  }, [initialValue, key])
 
   useEffect(() => {
-    setLS<T>(key, value);
-  }, [key, value]);
+    setLS<T>(key, value)
+  }, [key, value])
 
   const clear = () => {
-    removeLS(key);
-    setValue(initialValue);
-  };
+    removeLS(key)
+    setValue(initialValue)
+  }
 
-  return [value, setValue, clear] as const;
-};
+  return [value, setValue, clear] as const
+}
